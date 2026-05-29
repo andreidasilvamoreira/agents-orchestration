@@ -1,0 +1,274 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.builder-shell {
+    display: grid;
+    grid-template-columns: 20rem minmax(0, 1fr) 22rem;
+    gap: 1rem;
+}
+
+.builder-card {
+    border: 1px solid rgba(68, 64, 60, 1);
+    background: rgba(28, 25, 23, 0.88);
+    border-radius: 1.5rem;
+    padding: 1rem;
+}
+
+.builder-canvas {
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+}
+
+.builder-canvas-viewport {
+    position: relative;
+    min-height: 44rem;
+    overflow: hidden;
+    cursor: grab;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(68, 64, 60, 1);
+    background-image:
+        linear-gradient(rgba(120, 113, 108, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120, 113, 108, 0.15) 1px, transparent 1px),
+        radial-gradient(circle at top left, rgba(14, 165, 233, 0.12), transparent 30%),
+        linear-gradient(180deg, rgba(12, 10, 9, 1), rgba(28, 25, 23, 1));
+    background-size: 32px 32px, 32px 32px, auto, auto;
+}
+
+.builder-canvas-viewport.is-panning {
+    cursor: grabbing;
+}
+
+.builder-is-panning,
+.builder-is-panning * {
+    cursor: grabbing !important;
+}
+
+.builder-nodes-layer {
+    position: absolute;
+    inset: 0;
+}
+
+.builder-edges-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.builder-canvas-stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+}
+
+.builder-edge {
+    fill: none;
+    stroke: rgba(56, 189, 248, 0.9);
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+.builder-node {
+    position: absolute;
+    width: 220px;
+    height: 92px;
+}
+
+.builder-node-card {
+    height: 100%;
+    border: 1px solid rgba(87, 83, 78, 1);
+    background: rgba(12, 10, 9, 0.96);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
+}
+
+.builder-node.is-selected .builder-node-card {
+    border-color: rgba(251, 146, 60, 1);
+    box-shadow: 0 0 0 1px rgba(251, 146, 60, 0.45), 0 16px 32px rgba(0, 0, 0, 0.28);
+}
+
+.builder-node.is-connecting .builder-node-card {
+    border-color: rgba(56, 189, 248, 1);
+}
+
+.builder-node-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.9rem 1rem 0.35rem;
+    cursor: grab;
+}
+
+.builder-is-dragging-node,
+.builder-is-dragging-node * {
+    cursor: grabbing !important;
+}
+
+.builder-node-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #fafaf9;
+}
+
+.builder-node-meta {
+    margin-top: 0.2rem;
+    font-size: 0.72rem;
+    color: #a8a29e;
+}
+
+.builder-node-role {
+    border-radius: 9999px;
+    background: rgba(14, 165, 233, 0.12);
+    color: #bae6fd;
+    padding: 0.18rem 0.5rem;
+    font-size: 0.68rem;
+}
+
+.builder-node-body {
+    display: none;
+}
+
+.builder-port {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    border: 2px solid rgba(12, 10, 9, 1);
+    background: rgba(251, 146, 60, 1);
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.2);
+    cursor: pointer;
+    z-index: 2;
+}
+
+.builder-port-out {
+    background: rgba(56, 189, 248, 1);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.builder-port-in.builder-port-left,
+.builder-port-out.builder-port-left {
+    left: -8px;
+    top: 50%;
+    margin-top: -8px;
+    right: auto;
+}
+
+.builder-port-in.builder-port-right,
+.builder-port-out.builder-port-right {
+    right: -8px;
+    top: 50%;
+    margin-top: -8px;
+    left: auto;
+}
+
+.builder-port-in.builder-port-top,
+.builder-port-out.builder-port-top {
+    top: -8px;
+    left: 50%;
+    margin-left: -8px;
+    right: auto;
+    bottom: auto;
+}
+
+.builder-port-in.builder-port-bottom,
+.builder-port-out.builder-port-bottom {
+    bottom: -8px;
+    left: 50%;
+    margin-left: -8px;
+    top: auto;
+    right: auto;
+}
+
+.builder-node-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem 1rem 0.9rem;
+}
+
+.builder-node-view {
+    border-radius: 9999px;
+    border: 1px solid rgba(87, 83, 78, 1);
+    background: rgba(28, 25, 23, 1);
+    color: #e7e5e4;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.7rem;
+}
+
+.builder-node-view:hover {
+    border-color: rgba(56, 189, 248, 0.6);
+    color: #e0f2fe;
+}
+
+.builder-toast {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 90;
+    border-radius: 1rem;
+    padding: 0.9rem 1rem;
+    font-size: 0.85rem;
+    color: #fafaf9;
+    background: rgba(28, 25, 23, 0.96);
+    border: 1px solid rgba(87, 83, 78, 1);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.builder-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.builder-toast-error {
+    border-color: rgba(244, 63, 94, 0.4);
+}
+
+.builder-delete-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.builder-delete-modal.hidden {
+    display: none;
+}
+
+.builder-delete-card {
+    width: 100%;
+    max-width: 28rem;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(87, 83, 78, 1);
+    background: rgba(12, 10, 9, 0.98);
+    padding: 1.25rem;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.38);
+}
+
+@media (max-width: 1280px) {
+    .builder-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .builder-canvas-viewport {
+        min-height: 36rem;
+    }
+}
