@@ -1,4 +1,4 @@
-# Workflow Agents
+# Agent Orchestration
 
 Projeto Laravel para orquestrar workflows com agentes usando uma IA própria, sem depender de token de API por padrão.
 
@@ -9,6 +9,7 @@ Projeto Laravel para orquestrar workflows com agentes usando uma IA própria, se
 - Persistência de execuções e histórico de cada passo.
 - Driver local para `Ollama`.
 - Driver `OpenAI compatible` para LM Studio, Open WebUI proxy, vLLM ou outro endpoint local.
+- Driver `Codex CLI` para executar cada agente via `codex exec`.
 - Exemplo de workflow seedado para qualificação de leads.
 
 ## Estrutura principal
@@ -18,6 +19,7 @@ Projeto Laravel para orquestrar workflows com agentes usando uma IA própria, se
 - `app/Models/WorkflowStepRun.php`: histórico detalhado de cada agente/passo.
 - `app/Services/Workflows/WorkflowRunner.php`: motor que interpreta os passos.
 - `app/Services/Ai/*`: integração com a IA local.
+- `app/Services/Ai/Drivers/CodexCliDriver.php`: integração com `codex exec`.
 - `routes/api.php`: endpoints da API.
 
 ## Formato do workflow
@@ -72,6 +74,29 @@ OPENAI_COMPATIBLE_API_KEY=
 ```
 
 O token é opcional. Se o endpoint local não exigir autenticação, deixe vazio.
+
+Se quiser usar o `codex` CLI como backend dos agentes:
+
+```env
+AGENT_AI_DRIVER=codex_cli
+CODEX_CLI_BINARY=codex
+CODEX_CLI_MODEL=gpt-5.4
+CODEX_CLI_TIMEOUT=600
+CODEX_CLI_SANDBOX=workspace-write
+CODEX_CLI_AVAILABLE_MODELS=gpt-5.4
+```
+
+Pré-requisitos:
+
+1. Instale o `codex` CLI na máquina do app.
+2. Rode `codex login` no mesmo usuário que executa o PHP/Laravel.
+3. Garanta que `CODEX_CLI_WORKDIR` aponte para um diretório que o Codex possa usar como workspace quando necessário.
+
+Notas:
+
+- Cada passo do workflow vira uma chamada `codex exec`.
+- O `system_prompt` do agente e o prompt do passo são combinados em uma única instrução enviada ao CLI.
+- A lista de modelos exibida na UI passa a vir de `CODEX_CLI_AVAILABLE_MODELS`; você também pode digitar um modelo manualmente.
 
 ## Subida rápida
 

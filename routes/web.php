@@ -3,13 +3,14 @@
 use App\Http\Controllers\Web\AgentController;
 use App\Http\Controllers\Web\AgentPageController;
 use App\Http\Controllers\Web\AgentTeamController;
+use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\TeamPageController;
-use App\Http\Controllers\Web\WorkflowPageController;
 use App\Http\Controllers\Web\WorkflowBuilderController;
+use App\Http\Controllers\Web\WorkflowPageController;
 use App\Http\Controllers\Web\WorkflowWebController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/teams')->name('dashboard');
+Route::get('/', DashboardController::class)->name('dashboard');
 Route::get('/teams', TeamPageController::class)->name('teams.index');
 Route::get('/agents', AgentPageController::class)->name('agents.index');
 Route::get('/workflows', WorkflowPageController::class)->name('workflows.index');

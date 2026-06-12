@@ -20,7 +20,7 @@ class AgentPageController extends Controller
         try {
             $availableModels = $aiDriver->availableModels();
         } catch (Throwable) {
-            $modelsLookupError = 'Nao foi possivel consultar os modelos disponiveis no provider local.';
+            $modelsLookupError = 'Nao foi possivel consultar os modelos disponiveis no driver configurado.';
         }
 
         return Inertia::render('Agents/Index', [

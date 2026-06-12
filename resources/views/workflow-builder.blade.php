@@ -7,17 +7,47 @@
         @vite(['resources/css/app.css', 'resources/js/builder.js'])
     </head>
     <body class="min-h-screen bg-stone-950 text-stone-100">
-        <div id="workflow-builder-root" class="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
+        <div id="workflow-builder-root" class="mx-auto w-[80%] px-4 py-8 sm:px-6 lg:px-8">
+            @php
+                $settingsActive = request()->routeIs('teams.index', 'agents.index', 'workflows.index');
+            @endphp
             <header class="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-stone-800 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.16),_transparent_28%),linear-gradient(135deg,_rgba(28,25,23,1),_rgba(12,10,9,1))] p-6">
                 <div>
-                    <p class="text-sm uppercase tracking-[0.25em] text-sky-300">Visual Workflow Orchestration</p>
+                    <p class="text-sm uppercase tracking-[0.25em] text-sky-300">Agent Orchestration</p>
                     <h1 class="mt-2 text-3xl font-semibold">Builder visual de workflows</h1>
                     <p class="mt-3 max-w-3xl text-sm leading-6 text-stone-300">
                         Arraste agentes para o canvas, conecte em sequência e edite prompts por passo. O builder salva um fluxo linear compatível com o motor atual.
                     </p>
                 </div>
                 <div class="flex flex-wrap gap-3">
-                    <a href="{{ route('dashboard') }}" class="rounded-2xl border border-stone-700 px-4 py-3 text-sm text-stone-200">Voltar ao painel</a>
+                    <div class="flex items-center gap-3 rounded-2xl border border-stone-700 bg-stone-900/80 px-4 py-3 text-sm text-stone-200">
+                        <span class="h-2.5 w-2.5 rounded-full {{ $ai['is_connected'] ? 'bg-emerald-400 shadow-[0_0_12px_rgba(74,222,128,0.8)]' : 'bg-stone-500' }}"></span>
+                        <div class="leading-tight">
+                            <p class="font-medium text-stone-100">{{ $ai['model'] }}</p>
+                            <p class="text-xs text-stone-400">{{ $ai['status_label'] }}</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('dashboard') }}" class="rounded-2xl border border-stone-700 px-4 py-3 text-sm text-stone-200">Início</a>
+                    <a href="{{ route('workflows.builder') }}" class="rounded-2xl bg-stone-100 px-4 py-3 text-sm font-medium text-stone-950">Construtor visual</a>
+                    <details class="group relative">
+                        <summary class="{{ $settingsActive ? 'bg-stone-100 text-stone-950' : 'border border-stone-700 text-stone-200' }} flex cursor-pointer list-none items-center gap-2 rounded-2xl px-4 py-3 text-sm {{ $settingsActive ? 'font-medium' : '' }}">
+                            <span>Configurações</span>
+                            <svg class="h-4 w-4 transition group-open:rotate-180" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </summary>
+                        <div class="absolute right-0 z-20 mt-2 min-w-56 rounded-3xl border border-stone-800 bg-stone-950/98 p-2 shadow-2xl shadow-black/40">
+                            <a href="{{ route('teams.index') }}" class="{{ request()->routeIs('teams.index') ? 'bg-stone-100 text-stone-950' : 'text-stone-200 hover:bg-stone-900 hover:text-white' }} block rounded-2xl px-4 py-3 transition">
+                                <p class="text-sm font-medium">Times</p>
+                            </a>
+                            <a href="{{ route('agents.index') }}" class="{{ request()->routeIs('agents.index') ? 'bg-stone-100 text-stone-950' : 'text-stone-200 hover:bg-stone-900 hover:text-white' }} block rounded-2xl px-4 py-3 transition">
+                                <p class="text-sm font-medium">Agentes</p>
+                            </a>
+                            <a href="{{ route('workflows.index') }}" class="{{ request()->routeIs('workflows.index') ? 'bg-stone-100 text-stone-950' : 'text-stone-200 hover:bg-stone-900 hover:text-white' }} block rounded-2xl px-4 py-3 transition">
+                                <p class="text-sm font-medium">Workflows</p>
+                            </a>
+                        </div>
+                    </details>
                     <form method="GET" action="{{ route('workflows.builder') }}">
                         <select name="workflow" onchange="this.form.submit()" class="rounded-2xl border border-stone-700 bg-stone-900 px-4 py-3 text-sm">
                             <option value="">Novo workflow</option>

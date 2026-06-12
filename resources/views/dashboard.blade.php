@@ -11,7 +11,7 @@
             <header class="mb-8 grid gap-4 rounded-3xl border border-stone-800 bg-[radial-gradient(circle_at_top_left,_rgba(251,146,60,0.22),_transparent_28%),linear-gradient(135deg,_rgba(28,25,23,1),_rgba(12,10,9,1))] p-6 shadow-2xl shadow-black/30">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div class="max-w-3xl">
-                        <p class="mb-2 text-sm uppercase tracking-[0.25em] text-orange-300">Dify simples em Laravel</p>
+                        <p class="mb-2 text-sm uppercase tracking-[0.25em] text-orange-300">Agent Orchestration</p>
                         <h1 class="text-3xl font-semibold text-stone-50">Times de agentes + workflows</h1>
                         <p class="mt-3 text-sm leading-6 text-stone-300">
                             Configure um time, cadastre agentes com papel e prompt base, e monte workflows que encadeiam esses agentes.
@@ -73,16 +73,13 @@
                                 <textarea name="system_prompt" rows="4" placeholder="Prompt base do agente" class="w-full rounded-2xl border border-stone-700 bg-stone-950 px-4 py-3 text-sm"></textarea>
                                 <div class="grid gap-3 sm:grid-cols-2">
                                     <div class="space-y-2">
-                                        <select name="model" class="w-full rounded-2xl border border-stone-700 bg-stone-950 px-4 py-3 text-sm">
-                                            <option value="">Modelo opcional: usar padrão global</option>
-                                            @foreach ($availableModels as $model)
-                                                <option value="{{ $model }}">{{ $model }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input name="model" list="available-models" placeholder="Modelo opcional: usar padrão global" class="w-full rounded-2xl border border-stone-700 bg-stone-950 px-4 py-3 text-sm" />
                                         @if ($modelsLookupError)
                                             <p class="text-xs text-amber-300">{{ $modelsLookupError }}</p>
                                         @elseif ($availableModels === [])
-                                            <p class="text-xs text-stone-400">Nenhum modelo listado pelo provider atual.</p>
+                                            <p class="text-xs text-stone-400">Nenhum modelo sugerido pelo driver atual.</p>
+                                        @else
+                                            <p class="text-xs text-stone-400">Sugestões do driver atual disponíveis no autocomplete.</p>
                                         @endif
                                     </div>
                                     <div class="space-y-2">
@@ -205,12 +202,7 @@
                                         <textarea name="system_prompt" rows="4" class="w-full rounded-2xl border border-stone-700 bg-stone-900 px-4 py-3 text-sm">{{ $agent->system_prompt }}</textarea>
                                         <div class="grid gap-3 sm:grid-cols-2">
                                             <div class="space-y-2">
-                                                <select name="model" class="w-full rounded-2xl border border-stone-700 bg-stone-900 px-4 py-3 text-sm">
-                                                    <option value="">Modelo opcional: usar padrão global</option>
-                                                    @foreach ($availableModels as $model)
-                                                        <option value="{{ $model }}" @selected($agent->model === $model)>{{ $model }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <input name="model" list="available-models" value="{{ $agent->model }}" placeholder="Modelo opcional: usar padrão global" class="w-full rounded-2xl border border-stone-700 bg-stone-900 px-4 py-3 text-sm" />
                                             </div>
                                             <div class="space-y-2">
                                                 <input name="temperature" type="number" step="0.1" min="0" max="2" value="{{ $agent->temperature }}" class="w-full rounded-2xl border border-stone-700 bg-stone-900 px-4 py-3 text-sm" />
@@ -229,6 +221,12 @@
                             @endforelse
                         </div>
                     </div>
+
+                    <datalist id="available-models">
+                        @foreach ($availableModels as $model)
+                            <option value="{{ $model }}"></option>
+                        @endforeach
+                    </datalist>
 
                     <div class="rounded-3xl border border-stone-800 bg-stone-900/80 p-5">
                         <h2 class="mb-4 text-lg font-semibold">Workflows</h2>

@@ -1,9 +1,10 @@
 import React from 'react';
 import { router, useForm } from '@inertiajs/react';
-import { Card, Select, Shell, TextArea, TextInput } from '../../Shared/Ui';
+import { Card, Shell, TextArea, TextInput, Select } from '../../Shared/Ui';
 
 export default function Index(props) {
     const { teams, agents, availableModels, modelsLookupError } = props;
+    const modelOptionsId = 'agent-model-options';
     const create = useForm({ agent_team_id: '', name: '', slug: '', role: '', goal: '', system_prompt: '', model: '', temperature: '', is_active: true });
     const [editingId, setEditingId] = React.useState(null);
     const editing = agents.find((agent) => agent.id === editingId) || null;
@@ -40,11 +41,9 @@ export default function Index(props) {
                         <TextArea rows={4} value={create.data.system_prompt} onChange={(e) => create.setData('system_prompt', e.target.value)} placeholder="Prompt base" />
                         <div className="grid gap-3 sm:grid-cols-2">
                             <div className="space-y-2">
-                                <Select value={create.data.model} onChange={(e) => create.setData('model', e.target.value)}>
-                                    <option value="">Modelo opcional: usar padrao global</option>
-                                    {availableModels.map((model) => <option key={model} value={model}>{model}</option>)}
-                                </Select>
+                                <TextInput value={create.data.model} onChange={(e) => create.setData('model', e.target.value)} placeholder="Modelo opcional: usar padrao global" list={modelOptionsId} />
                                 {modelsLookupError ? <p className="text-xs text-amber-300">{modelsLookupError}</p> : null}
+                                {!modelsLookupError && availableModels.length ? <p className="text-xs text-stone-400">Sugestoes do driver atual disponiveis no autocomplete.</p> : null}
                             </div>
                             <div className="space-y-2">
                                 <TextInput type="number" min="0" max="2" step="0.1" value={create.data.temperature} onChange={(e) => create.setData('temperature', e.target.value)} placeholder="Temperature" />
@@ -100,10 +99,7 @@ export default function Index(props) {
                             <TextArea rows={2} value={edit.data.goal} onChange={(e) => edit.setData('goal', e.target.value)} />
                             <TextArea rows={4} value={edit.data.system_prompt} onChange={(e) => edit.setData('system_prompt', e.target.value)} />
                             <div className="grid gap-3 sm:grid-cols-2">
-                                <Select value={edit.data.model} onChange={(e) => edit.setData('model', e.target.value)}>
-                                    <option value="">Modelo opcional: usar padrao global</option>
-                                    {availableModels.map((model) => <option key={model} value={model}>{model}</option>)}
-                                </Select>
+                                <TextInput value={edit.data.model} onChange={(e) => edit.setData('model', e.target.value)} placeholder="Modelo opcional: usar padrao global" list={modelOptionsId} />
                                 <TextInput type="number" min="0" max="2" step="0.1" value={edit.data.temperature} onChange={(e) => edit.setData('temperature', e.target.value)} />
                             </div>
                             <label className="flex items-center gap-2 text-sm text-stone-300">
@@ -115,6 +111,10 @@ export default function Index(props) {
                     </div>
                 </div>
             ) : null}
+
+            <datalist id={modelOptionsId}>
+                {availableModels.map((model) => <option key={model} value={model} />)}
+            </datalist>
         </Shell>
     );
 }
